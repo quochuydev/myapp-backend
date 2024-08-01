@@ -22,7 +22,7 @@ jobs:
         with:
           publish: npx changeset tag
         env:
-          GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Release Version
         if: steps.changesets.outputs.published == 'true'
         id: get-version
