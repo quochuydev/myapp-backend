@@ -1,5 +1,4 @@
 name: CD
-
 on:
   push:
     branches:
@@ -36,9 +35,9 @@ jobs:
     secrets: inherit
   deploy-to-development:
     needs: run-tests
-    # permissions:
-    #   pull-requests: write
-    #   id-token: write
+    permissions:
+      pull-requests: write
+      id-token: write
     uses: ./.github/workflows/deploy.yaml
     secrets: inherit
     with:
