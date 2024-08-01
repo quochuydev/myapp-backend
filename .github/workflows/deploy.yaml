@@ -4,17 +4,29 @@ on:
   workflow_dispatch:
     inputs:
       aws-env:
-        description: 'Elastic Beanstalk environment name'
+        description: 'AWS Environment'
         required: true
         default: 'development'
         type: string
-      github-ref:
-        description: 'GitHub ref'
+      github-env:
+        description: 'GitHub Environment'
+        required: true
+        default: 'main'
+        type: string
+  workflow_call:
+    inputs:
+      aws-env:
+        description: 'AWS Environment'
+        required: true
+        default: 'development'
+        type: string
+      github-env:
+        description: 'Github Environment'
         required: true
         default: 'main'
         type: string
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
