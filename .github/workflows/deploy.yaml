@@ -1,4 +1,4 @@
-name: CI
+name: Deploy
 
 on:
   workflow_dispatch:
@@ -28,12 +28,3 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-      - name: Cache AWS EB CLI
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-
-      - name: Install AWS EB CLI
-        run: pip install awsebcli
-      # - name: Deploy to Elastic Beanstalk
-      #   run: eb deploy --staged --env ${{ github.event.inputs.eb }}
