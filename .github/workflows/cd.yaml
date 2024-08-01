@@ -6,8 +6,10 @@ on:
       - main
 
 jobs:
-  test:
+  create-version-pr-or-release:
     runs-on: ubuntu-latest
+    outputs:
+      should-deploy: ${{steps.changesets.outputs.hasChangesets == 'false'}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -27,3 +29,18 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         id: get-version
         run: echo "version=${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}" >> $GITHUB_OUTPUT
+  run-tests:
+    needs: create-version-pr-or-release
+    if: needs.create-version-pr-or-release.outputs.should-deploy == 'true'
+    uses: ./.github/workflows/test.yaml
+    secrets: inherit
+  deploy-to-development:
+    needs: run-tests
+    # permissions:
+    #   pull-requests: write
+    #   id-token: write
+    uses: ./.github/workflows/deploy.yaml
+    secrets: inherit
+    with:
+      aws-env: development
+      github-env: main
