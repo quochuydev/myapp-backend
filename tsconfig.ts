@@ -1,13 +1,13 @@
 export default {
   compilerOptions: {
-    target: "es2020",
-    module: "commonjs",
+    target: 'es2020',
+    module: 'commonjs',
     strict: true,
     esModuleInterop: true,
     skipLibCheck: true,
     forceConsistentCasingInFileNames: true,
-    outDir: "dist",
-    rootDir: ".",
+    outDir: 'dist',
+    rootDir: '.',
     sourceMap: true,
     declaration: true,
     declarationMap: true,
@@ -29,9 +29,12 @@ export default {
     allowUnreachableCode: true,
     exactOptionalPropertyTypes: true,
     useUnknownInCatchVariables: true,
-    importsNotUsedAsValues: "error",
+    importsNotUsedAsValues: 'error',
     isolatedModules: true,
+    paths: {
+      '@/*': ['./*'],
+    },
   },
-  include: ["**/*.ts"],
-  exclude: ["node_modules", "dist"],
+  include: ['**/*.ts'],
+  exclude: ['node_modules', 'dist'],
 };
