@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "migrate-dev": "POSTGRES_URL=postgresql://postgres:postgres@localhost:5432/myapp prisma migrate dev",
+    "migrate-create-only": "POSTGRES_URL=postgresql://postgres:postgres@localhost:5432/myapp prisma migrate dev --create-only",
+    "migrate-deploy": "POSTGRES_URL=postgresql://postgres:postgres@localhost:5432/myapp prisma migrate deploy"
+  },
+  "dependencies": {}
+}
