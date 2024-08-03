@@ -23,8 +23,6 @@ jobs:
           publish: npx changeset tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Print outputs
-        run: echo "${{ fromJson(steps.changesets.outputs) }}"
       - name: Set Release Version
         if: steps.changesets.outputs.published == 'true'
         id: get-version
