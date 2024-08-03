@@ -19,7 +19,5 @@ jobs:
     steps:
       - name: Pull image from docker hub
         run: docker pull quochuydev/myapp-backend:latest
-      - name: Delete old container
-        run: docker rm -f myapp-backend
       - name: Run docker container
-        run: docker run -d -p 3000:3000 -e ENV_PATH=.env --name myapp-backend quochuydev/myapp-backend
+        run: docker run --init -d -p 3000:3000 -e ENV_PATH=.env --name myapp-backend quochuydev/myapp-backend
