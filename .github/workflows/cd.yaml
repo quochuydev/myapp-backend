@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+      - staging
+      - production
 
 jobs:
   run-tests:
@@ -13,10 +15,13 @@ jobs:
     uses: ./.github/workflows/tag.yaml
     secrets: inherit
   build:
-    needs: tag
+    needs: run-tests
     uses: ./.github/workflows/build.yaml
     secrets: inherit
   deploy:
     needs: build
     uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: development
+      version: ${{ github.sha }}
     secrets: inherit

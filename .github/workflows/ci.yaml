@@ -2,8 +2,14 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: ['feat/*']
 
 jobs:
   run-tests:
     uses: ./.github/workflows/test.yaml
+    secrets: inherit
+  build:
+    needs: run-tests
+    uses: ./.github/workflows/build.yaml
     secrets: inherit
