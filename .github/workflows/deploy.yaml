@@ -22,4 +22,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f myapp-backend
       - name: Run docker container
-        run: docker run -d -p 3000:3000 -e PORT=3000 --name myapp-backend quochuydev/myapp-backend
+        run: docker run -d -p 3000:3000 -e ENV_PATH=.env --name myapp-backend quochuydev/myapp-backend
