@@ -6,4 +6,6 @@ curl -X POST http://localhost:3004/api/api.v1.user.getList -H "Content-Type: app
 docker build -t quochuydev/myapp-backend .
 
 docker push quochuydev/myapp-backend:latest
+
+npx changeset
 ```
