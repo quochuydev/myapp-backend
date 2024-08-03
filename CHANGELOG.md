@@ -1,5 +1,11 @@
 # myapp-backend
 
+## 0.0.3
+
+### Patch Changes
+
+- 3d62910: feat: update cicd
+
 ## 0.0.2
 
 ### Patch Changes
