@@ -36,7 +36,7 @@ jobs:
       - name: Remove old container if it exists
         run: |
           if [ "$(docker ps -a -q -f name=myapp-backend)" ]; then
-            docker rm -f myapp-backend
+            docker rm --force myapp-backend
           else
             echo "No container to remove"
           fi
@@ -44,7 +44,7 @@ jobs:
         run: |
           IMAGE_IDS=$(docker images quochuydev/myapp-backend -a -q)
           if [ -n "$IMAGE_IDS" ]; then
-            docker rmi $IMAGE_IDS
+            docker rmi --force $IMAGE_IDS
           else
             echo "No images to remove"
           fi
