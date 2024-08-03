@@ -1,0 +1,14 @@
+name: Deploy
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull quochuydev/myapp-backend:latest
+      - name: Create .env file
+        run: echo "PORT=3000" >> .env
+      - name: Run docker container
+        run: docker run --init -d -p 3000:3000 -e PORT=3000 --name myapp-backend quochuydev/myapp-backend

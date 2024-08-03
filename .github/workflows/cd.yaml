@@ -1,0 +1,46 @@
+name: CD
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    uses: ./.github/workflows/test.yaml
+    secrets: inherit
+  create-tag:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    outputs:
+      # should-deploy: ${{steps.changesets.outputs.hasChangesets == 'false'}}
+      version: ${{steps.get-version.outputs.version}}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 18
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install
+      - name: Create Version PR or Github Release
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: npx changeset tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Print outputs
+        run: echo "${{ fromJson(steps.changesets.outputs) }}"
+      - name: Set Release Version
+        if: steps.changesets.outputs.published == 'true'
+        id: get-version
+        run: echo "version=${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}" >> $GITHUB_OUTPUT
+  build:
+    needs: run-tests
+    uses: ./.github/workflows/build.yaml
+    secrets: inherit
+  deploy:
+    needs: build
+    # if: needs.create-tag.outputs.should-deploy == 'true'
+    uses: ./.github/workflows/deploy.yaml
+    secrets: inherit
