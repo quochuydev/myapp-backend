@@ -31,7 +31,7 @@ export async function startServer(options: {
   app.use(bodyParser.urlencoded({ extended: false }));
 
   app.get('/', (_: Request, response: Response) => {
-    response.status(200).send('ok - v1');
+    response.status(200).send(`ok - ${configuration.buildVersion}`);
   });
 
   app.post('/api/:subject', async (request: Request, response: Response) => {

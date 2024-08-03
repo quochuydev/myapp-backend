@@ -5,12 +5,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{steps.get-version.outputs.version}}
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
       - name: Login to Docker Hub
         run: docker login -u ${{ vars.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build docker image
-        run: docker build -t quochuydev/myapp-backend .
+        run: docker build -t quochuydev/myapp-backend:${{github.sha}} .
+      - name: Publish image to Docker Hub
+        run: docker push quochuydev/myapp-backend:${{github.sha}}
+      - name: Tag docker image
+        run: docker tag quochuydev/myapp-backend:${{github.sha}} quochuydev/myapp-backend:latest
       - name: Publish image to Docker Hub
         run: docker push quochuydev/myapp-backend:latest
+      - name: Set Release Version
+        id: get-version
+        run: echo "version=${{github.sha}}" >> $GITHUB_OUTPUT
