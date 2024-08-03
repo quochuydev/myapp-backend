@@ -11,7 +11,7 @@ jobs:
       - name: Create .env file
         run: echo "PORT=3000" >> .env
       - name: Remove old container
-        run: docker rm -f myapp-backend || true
+        run: docker rm -f myapp-backend
       - name: Run docker container
         run: docker run --init -d -p 3000:3000 --env-file .env --name myapp-backend quochuydev/myapp-backend
       - name: Send custom JSON data to Slack workflow
