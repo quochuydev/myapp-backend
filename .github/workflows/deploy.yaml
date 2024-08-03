@@ -10,5 +10,14 @@ jobs:
         run: docker pull quochuydev/myapp-backend:latest
       - name: Create .env file
         run: echo "PORT=3000" >> .env
+      - name: Remove old container
+        run: docker rm -f myapp-backend || true
       - name: Run docker container
         run: docker run --init -d -p 3000:3000 --env-file .env --name myapp-backend quochuydev/myapp-backend
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload-file-path: './.github/slack/payload-slack-content.json'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

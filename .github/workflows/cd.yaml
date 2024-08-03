@@ -8,8 +8,12 @@ jobs:
   run-tests:
     uses: ./.github/workflows/test.yaml
     secrets: inherit
-  build:
+  tag:
     needs: run-tests
+    uses: ./.github/workflows/tag.yaml
+    secrets: inherit
+  build:
+    needs: tag
     uses: ./.github/workflows/build.yaml
     secrets: inherit
   deploy:
