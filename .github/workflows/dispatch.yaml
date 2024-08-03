@@ -1,33 +1,28 @@
 on:
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-        type: choice
-        options:
-          - info
-          - warning
-          - debug
-      tags:
-        description: 'Test scenario tags'
-        required: false
-        type: boolean
       environment:
         description: 'Environment to run tests against'
         type: environment
+        default: 'development'
         required: true
 
 jobs:
-  log-the-inputs:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
     steps:
-      - run: |
-          echo "Log level: $LEVEL"
-          echo "Tags: $TAGS"
-          echo "Environment: $ENVIRONMENT"
+      - name: Pull image from docker hub
+        run: docker pull quochuydev/myapp-backend:latest
+      - name: Create .env file
+        run: echo "PORT=3000" >> .env
+      - name: Remove old container
+        run: docker rm -f myapp-backend
+      - name: Run docker container
+        run: docker run --init -d -p 3000:3000 --env-file .env --name myapp-backend quochuydev/myapp-backend
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload-file-path: './.github/slack/payload-slack-content.json'
         env:
-          LEVEL: ${{ inputs.logLevel }}
-          TAGS: ${{ inputs.tags }}
-          ENVIRONMENT: ${{ inputs.environment }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
