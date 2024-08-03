@@ -1,19 +1,15 @@
-import bodyParser from "body-parser";
-import cors from "cors";
-import express, { Request, Response } from "express";
-import { handlers } from "../apis/main";
-import configuration from "../configuration";
-import { APIHandler, Injection } from "./types";
-import PrismaService from "./prisma-service";
-import RedisService from "./redis-service";
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express, { Request, Response } from 'express';
+import { handlers } from '../apis/main';
+import configuration from '../configuration';
+import { APIHandler, Injection } from './types';
+import PrismaService from './prisma-service';
+import RedisService from './redis-service';
 
 export async function startServer(options: {
   defaultAuthSubjects: string[];
   unauthorizedSubjects: string[];
-  customAuthSubjects: Array<{
-    authSubjects: string[];
-    subjects: string[];
-  }>;
 }) {
   const redisService = configuration.redis.url
     ? await RedisService(configuration.redis.url)
@@ -34,39 +30,24 @@ export async function startServer(options: {
   app.use(bodyParser.json({}));
   app.use(bodyParser.urlencoded({ extended: false }));
 
-  app.get("/", (_: Request, response: Response) => {
-    response.status(200).send("ok");
+  app.get('/', (_: Request, response: Response) => {
+    response.status(200).send('ok');
   });
 
-  app.post("/api/:subject", async (request: Request, response: Response) => {
+  app.post('/api/:subject', async (request: Request, response: Response) => {
     try {
       const subject = request.params.subject;
-      if (!subject) throw new Error("invalid subject");
+      if (!subject) throw new Error('invalid subject');
 
-      const { unauthorizedSubjects, customAuthSubjects, defaultAuthSubjects } =
-        options;
+      const { unauthorizedSubjects, defaultAuthSubjects } = options;
 
       if (!unauthorizedSubjects.includes(subject)) {
-        const custom = customAuthSubjects.find(({ subjects }) =>
-          subjects.includes(subject)
-        );
-
-        const authSubjects = custom ? custom.authSubjects : defaultAuthSubjects;
-
-        for (const authSubject of authSubjects) {
-          await processHandler({
-            subject: authSubject,
-            injection,
-            request,
-          });
+        for (const authSubject of defaultAuthSubjects) {
+          await processHandler({ subject: authSubject, injection, request });
         }
       }
 
-      const result = await processHandler({
-        subject,
-        injection,
-        request,
-      });
+      const result = await processHandler({ subject, injection, request });
 
       response.status(result.code).send(result.body);
     } catch (error) {
@@ -79,9 +60,9 @@ export async function startServer(options: {
   });
 
   process
-    .on("unhandledRejection", console.error)
-    .on("uncaughtException", console.error)
-    .on("beforeExit", () =>
+    .on('unhandledRejection', console.error)
+    .on('uncaughtException', console.error)
+    .on('beforeExit', () =>
       Promise.allSettled([
         redisService?.dispose(),
         prismaService?.$disconnect(),
@@ -95,10 +76,10 @@ async function processHandler(params: {
   request: Request;
 }) {
   const { subject, injection, request } = params;
-  if (!subject) throw new Error("invalid subject");
+  if (!subject) throw new Error('invalid subject');
 
   const handler = handlers.find((h) => h.subject === subject) as APIHandler;
-  if (!handler) throw new Error("subject not found");
+  if (!handler) throw new Error('subject not found');
 
   const validateResult = await handler.validate(
     {
