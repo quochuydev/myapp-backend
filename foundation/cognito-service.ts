@@ -63,7 +63,6 @@ export default function CognitoService(app: Express, injection: Injection) {
   );
 
   app.get('/auth/session', (req: Request, res: Response) => {
-    console.log('req.session', req.session);
     res.send(req.isAuthenticated() ? req.user : {});
   });
 

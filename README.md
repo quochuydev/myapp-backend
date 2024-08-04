@@ -42,5 +42,5 @@ docker run -d --name redis -p 6379:6379 redis:7.2
 ### Setup local postgres
 
 ```sh
-docker run -d --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:14.2
+docker run -d --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=1 postgres:14.2
 ```
