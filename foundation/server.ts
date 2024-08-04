@@ -6,7 +6,7 @@ import configuration from '../configuration';
 import { APIHandler, Injection } from './types';
 import PrismaService from './prisma-service';
 import RedisService from './redis-service';
-import registerPassportService from './passport-service';
+import CognitoService from './cognito-service';
 
 export async function startServer(options: {
   defaultAuthSubjects: string[];
@@ -21,6 +21,7 @@ export async function startServer(options: {
     : undefined;
 
   const injection: Injection = {
+    configuration,
     redisService,
     prismaService,
   };
@@ -31,7 +32,7 @@ export async function startServer(options: {
   app.use(bodyParser.json({}));
   app.use(bodyParser.urlencoded({ extended: false }));
 
-  registerPassportService(app, injection);
+  CognitoService(app, injection);
 
   app.get('/', (_: Request, response: Response) => {
     response.status(200).send(`ok - ${configuration.buildVersion}`);

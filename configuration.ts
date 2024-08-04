@@ -16,6 +16,9 @@ if (process.env.ENV_PATH) {
 const schema = z.object({
   port: z.number(),
   buildVersion: z.string().optional(),
+  session: z.object({
+    secret: z.string().optional(),
+  }),
   redis: z.object({
     url: z.string().optional(),
   }),
@@ -29,12 +32,18 @@ const schema = z.object({
     issuer: z.string().optional(),
     clientId: z.string().optional(),
     clientSecret: z.string().optional(),
+    callbackUrl: z.string().optional(),
   }),
 });
 
-const configuration = {
-  port: process.env.PORT && parseInt(process.env.PORT),
+export type Configuration = z.infer<typeof schema>;
+
+const configuration: Configuration = {
+  port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
   buildVersion: process.env.BUILD_VERSION as string,
+  session: {
+    secret: process.env.SESSION_SECRET as string,
+  },
   redis: {
     url: process.env.REDIS_URL as string,
   },
@@ -43,6 +52,12 @@ const configuration = {
   },
   mongo: {
     url: process.env.MONGO_URL as string,
+  },
+  cognito: {
+    issuer: process.env.COGNITO_ISSUER as string,
+    clientId: process.env.COGNITO_CLIENT_ID as string,
+    clientSecret: process.env.COGNITO_CLIENT_SECRET as string,
+    callbackUrl: process.env.COGNITO_CALLBACK_URL as string,
   },
 };
 

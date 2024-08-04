@@ -1,7 +1,9 @@
 import RedisService from '../foundation/redis-service';
 import PrismaService from '../foundation/prisma-service';
+import { Configuration } from '../configuration';
 
 export type Injection = {
+  configuration: Configuration;
   redisService?: Awaited<ReturnType<typeof RedisService>>;
   prismaService?: Awaited<ReturnType<typeof PrismaService>>;
 };
