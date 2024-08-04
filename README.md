@@ -30,3 +30,17 @@ docker push quochuydev/myapp-backend:latest
 ```
 
 ### Setup github runner in EC2 instance
+
+## Local development
+
+### Setup local redis
+
+```sh
+docker run -d --name redis -p 6379:6379 redis:7.2
+```
+
+### Setup local postgres
+
+```sh
+docker run -d --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=1 postgres:14.2
+```

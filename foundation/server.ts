@@ -6,6 +6,7 @@ import configuration from '../configuration';
 import { APIHandler, Injection } from './types';
 import PrismaService from './prisma-service';
 import RedisService from './redis-service';
+import CognitoService from './cognito-service';
 
 export async function startServer(options: {
   defaultAuthSubjects: string[];
@@ -20,6 +21,7 @@ export async function startServer(options: {
     : undefined;
 
   const injection: Injection = {
+    configuration,
     redisService,
     prismaService,
   };
@@ -29,6 +31,8 @@ export async function startServer(options: {
   app.use(cors({ credentials: true, origin: true }));
   app.use(bodyParser.json({}));
   app.use(bodyParser.urlencoded({ extended: false }));
+
+  CognitoService(app, injection);
 
   app.get('/', (_: Request, response: Response) => {
     response.status(200).send(`ok - ${configuration.buildVersion}`);
@@ -53,6 +57,11 @@ export async function startServer(options: {
     } catch (error) {
       response.status(error.code || 500).send(error);
     }
+  });
+
+  app.use((error, request, response, next) => {
+    console.log(error);
+    response.status(error.code || 500).send(error);
   });
 
   app.listen(configuration.port, () => {
@@ -83,7 +92,7 @@ async function processHandler(params: {
 
   const validateResult = await handler.validate(
     {
-      headers: request.headers,
+      headers: request.headers as Record<string, string>,
       body: request.body,
     },
     injection
@@ -93,7 +102,7 @@ async function processHandler(params: {
 
   const authorizeResult = await handler.authorize(
     {
-      headers: request.headers,
+      headers: request.headers as Record<string, string>,
       body: request.body,
     },
     injection
@@ -103,7 +112,7 @@ async function processHandler(params: {
 
   const result = await handler.handle(
     {
-      headers: request.headers,
+      headers: request.headers as Record<string, string>,
       body: request.body,
     },
     injection
