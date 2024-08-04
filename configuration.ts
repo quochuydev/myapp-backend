@@ -25,6 +25,11 @@ const schema = z.object({
   mongo: z.object({
     url: z.string().optional(),
   }),
+  cognito: z.object({
+    issuer: z.string().optional(),
+    clientId: z.string().optional(),
+    clientSecret: z.string().optional(),
+  }),
 });
 
 const configuration = {

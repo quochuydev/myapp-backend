@@ -6,6 +6,7 @@ import configuration from '../configuration';
 import { APIHandler, Injection } from './types';
 import PrismaService from './prisma-service';
 import RedisService from './redis-service';
+import registerPassportService from './passport-service';
 
 export async function startServer(options: {
   defaultAuthSubjects: string[];
@@ -30,6 +31,8 @@ export async function startServer(options: {
   app.use(bodyParser.json({}));
   app.use(bodyParser.urlencoded({ extended: false }));
 
+  registerPassportService(app, injection);
+
   app.get('/', (_: Request, response: Response) => {
     response.status(200).send(`ok - ${configuration.buildVersion}`);
   });
@@ -53,6 +56,11 @@ export async function startServer(options: {
     } catch (error) {
       response.status(error.code || 500).send(error);
     }
+  });
+
+  app.use((error, request, response, next) => {
+    console.log(error);
+    response.status(error.code || 500).send(error);
   });
 
   app.listen(configuration.port, () => {
@@ -83,7 +91,7 @@ async function processHandler(params: {
 
   const validateResult = await handler.validate(
     {
-      headers: request.headers,
+      headers: request.headers as Record<string, string>,
       body: request.body,
     },
     injection
@@ -93,7 +101,7 @@ async function processHandler(params: {
 
   const authorizeResult = await handler.authorize(
     {
-      headers: request.headers,
+      headers: request.headers as Record<string, string>,
       body: request.body,
     },
     injection
@@ -103,7 +111,7 @@ async function processHandler(params: {
 
   const result = await handler.handle(
     {
-      headers: request.headers,
+      headers: request.headers as Record<string, string>,
       body: request.body,
     },
     injection
