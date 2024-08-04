@@ -21,7 +21,12 @@ export default function CognitoService(app: Express, injection: Injection) {
   );
 
   app.use(passport.initialize());
-  app.use(passport.session({ secret: 'your-session-secret' }));
+
+  app.use(
+    passport.session({
+      secret: configuration.session.secret,
+    })
+  );
 
   passport.use(
     new OAuth2Strategy(
