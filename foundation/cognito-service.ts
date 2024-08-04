@@ -11,12 +11,14 @@ export default function CognitoService(app: Express, injection: Injection) {
 
   app.use(
     session({
-      store: new RedisStore({
-        client: redisService?.getRedisClient(),
-      }),
       secret: configuration.session.secret,
       resave: false,
       saveUninitialized: true,
+      store: redisService
+        ? new RedisStore({
+            client: redisService.getRedisClient(),
+          })
+        : undefined,
     })
   );
 
@@ -39,7 +41,7 @@ export default function CognitoService(app: Express, injection: Injection) {
         scope: ['openid', 'email', 'profile'],
       },
       (idToken, _, obj, profile, done) => {
-        console.log(`debug:obj`, obj);
+        // console.log(`debug:obj`, obj);
         const user = jwtDecode(idToken);
         done(null, user);
       }
@@ -54,27 +56,18 @@ export default function CognitoService(app: Express, injection: Injection) {
     done(null, obj);
   });
 
-  app.get('/auth/cognito', passport.authenticate('oauth2'));
+  app.get('/auth/signIn', passport.authenticate('oauth2'));
 
-  app.get(
-    '/auth/cognito/callback',
-    passport.authenticate('oauth2'),
-    (req, res) => res.redirect('/auth/protected')
+  app.get('/auth/callback', passport.authenticate('oauth2'), (req, res) =>
+    res.redirect('/auth/session')
   );
 
-  app.get('/auth/protected', (req: Request, res: Response) => {
+  app.get('/auth/session', (req: Request, res: Response) => {
     console.log('req.session', req.session);
-
-    if (req.isAuthenticated()) {
-      res.send(
-        `Hello, ${JSON.stringify(req.user)} <a href="/auth/logout">Logout</a>`
-      );
-    } else {
-      res.send('Please <a href="/auth/cognito">log in</a>.');
-    }
+    res.send(req.isAuthenticated() ? req.user : {});
   });
 
   app.get('/auth/logout', (req, res) => {
-    req.logout(() => res.redirect('/auth/protected'));
+    req.logout(() => res.redirect('/auth/session'));
   });
 }
