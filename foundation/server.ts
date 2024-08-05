@@ -8,8 +8,8 @@ import PrismaService from './prisma-service';
 import RedisService from './redis-service';
 
 export async function startServer(options: {
-  defaultAuthSubjects: string[];
-  unauthorizedSubjects: string[];
+  defaultAuthSubjects?: string[];
+  unauthorizedSubjects?: string[];
 }) {
   const redisService = configuration.redis.url
     ? await RedisService(configuration.redis.url)
@@ -39,7 +39,7 @@ export async function startServer(options: {
       const subject = request.params.subject;
       if (!subject) throw new Error('invalid subject');
 
-      const { unauthorizedSubjects, defaultAuthSubjects } = options;
+      const { defaultAuthSubjects = [], unauthorizedSubjects = [] } = options;
 
       if (!unauthorizedSubjects.includes(subject)) {
         for (const authSubject of defaultAuthSubjects) {

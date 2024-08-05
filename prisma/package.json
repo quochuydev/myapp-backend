@@ -1,9 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "migrate-dev": "POSTGRES_URL=postgresql://postgres:postgres@localhost:5432/myapp prisma migrate dev",
-    "migrate-create-only": "POSTGRES_URL=postgresql://postgres:postgres@localhost:5432/myapp prisma migrate dev --create-only",
-    "migrate-deploy": "POSTGRES_URL=postgresql://postgres:postgres@localhost:5432/myapp prisma migrate deploy"
+    "migrate-dev": "POSTGRES_URL=postgres://postgres:1@localhost:5432/myapp prisma migrate dev",
+    "migrate-create-only": "POSTGRES_URL=postgres://postgres:1@localhost:5432/myapp prisma migrate dev --create-only",
+    "migrate-deploy": "POSTGRES_URL=postgres://postgres:1@localhost:5432/myapp prisma migrate deploy"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@prisma/client": "5.14.0",
+    "prisma": "5.14.0"
+  }
 }
