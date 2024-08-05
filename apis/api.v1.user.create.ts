@@ -1,6 +1,6 @@
 import * as z from 'zod';
-import { Authorize, Handle, Validate } from '../foundation/types';
-import { isValidRequest } from '../foundation/utils';
+import { Authorize, Handle, Validate } from '../core/types';
+import { isValidRequest } from '../core/utils';
 import { ApiV1UserCreate } from '../types/api.v1.user';
 
 const schema = z.object({

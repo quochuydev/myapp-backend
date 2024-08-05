@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import handler from '../apis/api.v1.user.create';
-import { getInjection } from '../foundation/integration-server';
+import { getInjection } from '../core-test/server';
 import fixture from './api.v1.user.create.fixture';
 
 describe('Testing', async () => {
