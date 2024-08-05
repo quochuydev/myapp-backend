@@ -1,11 +1,12 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import handler from '../apis/api.v1.user.create';
-import fixture from './api.v1.user.create.fixture';
 import { getInjection } from '../foundation/integration-server';
+import fixture from './api.v1.user.create.fixture';
 
 describe('Testing', async () => {
   it(`With invalid payload from body, validate will be successful`, async () => {
     const result = await handler.validate(fixture.valid, getInjection());
+    console.log(`debug:result`, result);
     expect(result).toBeDefined();
   });
 
@@ -22,5 +23,6 @@ describe('Testing', async () => {
     });
 
     expect(user).toBeDefined();
+    expect(user).toMatchObject(fixture.expectedData);
   });
 });

@@ -3,20 +3,26 @@ import PrismaService from './prisma-service';
 import RedisService from './redis-service';
 import { Injection } from './types';
 
-const injection: Injection = {
-  redisService: undefined,
-  prismaService: undefined,
-};
+let di: Injection;
 
-export const getInjection = () => injection;
+function getInjection() {
+  if (!di) {
+    throw new Error('To use di, must start server before');
+  }
+  return di;
+}
 
-export const Server = {
+export { getInjection };
+
+export default {
   start: async () => {
     const redisService = await RedisService(configuration.redis.url);
     const prismaService = PrismaService(configuration.postgres.url);
 
-    injection.prismaService = prismaService;
-    injection.redisService = redisService;
+    di = {
+      redisService,
+      prismaService,
+    };
   },
   stop: async () => {
     await Promise.allSettled([

@@ -1,10 +1,10 @@
 import { beforeAll, afterAll } from 'vitest';
-import { Server } from './foundation/integration-server';
+import Server from './foundation/integration-server';
 
-beforeAll(() => {
-  Server.start();
+beforeAll(async () => {
+  await Server.start();
 });
 
-afterAll(() => {
-  Server.stop();
+afterAll(async () => {
+  await Server.stop();
 });

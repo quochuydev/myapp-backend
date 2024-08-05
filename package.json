@@ -28,6 +28,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "generate": "npx prisma generate",
-    "test": "ENV_PATH=.env.test vitest"
+    "test": "ENV_PATH=.env.test vitest run"
   }
 }
