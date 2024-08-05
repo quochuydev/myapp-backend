@@ -1,7 +1,7 @@
-import { APIService } from "../foundation/types";
+import { APIService } from '../core/types';
 
 export type ApiV1AuthAuthorize = APIService<
-  "api.v1.auth.authorize",
+  'api.v1.auth.authorize',
   undefined,
   void
 >;

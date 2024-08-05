@@ -1,7 +1,7 @@
 import configuration from '../configuration';
-import PrismaService from './prisma-service';
-import RedisService from './redis-service';
-import { Injection } from './types';
+import PrismaService from '../core/prisma-service';
+import RedisService from '../core/redis-service';
+import { Injection } from '../core/types';
 
 let di: Injection;
 

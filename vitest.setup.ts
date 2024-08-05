@@ -1,5 +1,5 @@
 import { beforeAll, afterAll } from 'vitest';
-import Server from './foundation/integration-server';
+import Server from './core-test/server';
 
 beforeAll(async () => {
   await Server.start();

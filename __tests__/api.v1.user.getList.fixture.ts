@@ -1,4 +1,4 @@
-import { APIRequest } from '../foundation/types';
+import { APIRequest } from '../core/types';
 import { ApiV1UserGetList } from '../types/api.v1.user';
 
 const valid: APIRequest<ApiV1UserGetList> = {

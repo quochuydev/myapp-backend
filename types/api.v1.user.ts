@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { APIService } from '../foundation/types';
+import { APIService } from '../core/types';
 
 export type ApiV1UserGetList = APIService<
   'api.v1.user.getList',
