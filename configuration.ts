@@ -22,9 +22,6 @@ const schema = z.object({
   postgres: z.object({
     url: z.string().optional(),
   }),
-  mongo: z.object({
-    url: z.string().optional(),
-  }),
 });
 
 const configuration = {
@@ -35,9 +32,6 @@ const configuration = {
   },
   postgres: {
     url: process.env.POSTGRES_URL as string,
-  },
-  mongo: {
-    url: process.env.MONGO_URL as string,
   },
 };
 
