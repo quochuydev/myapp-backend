@@ -1,8 +1,20 @@
-import { ApiV1UserGetList } from "../types/api.v1.user";
-import { Authorize, Handle, Validate } from "../foundation/types";
+import { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { Authorize, Handle, Validate } from '../foundation/types';
+import { isValidRequest } from '../foundation/utils';
+import { ApiV1UserGetList } from '../types/api.v1.user';
+
+const schema = z.object({
+  q: z.string().optional(),
+});
 
 const validate: Validate<ApiV1UserGetList> = async (data, injection) => {
-  return { code: 200 };
+  return isValidRequest({
+    data: {
+      ...data.body,
+    },
+    schema,
+  });
 };
 
 const authorize: Authorize<ApiV1UserGetList> = async (data, injection) => {
@@ -10,17 +22,24 @@ const authorize: Authorize<ApiV1UserGetList> = async (data, injection) => {
 };
 
 const handle: Handle<ApiV1UserGetList> = async (data, injection) => {
+  const prismaService = injection.prismaService;
+
+  const userWhereInput: Prisma.UserWhereInput = {};
+  if (data.body.q) userWhereInput.email = { contains: data.body.q };
+
+  const users = await prismaService.user.findMany({
+    where: userWhereInput,
+  });
+
   return {
     code: 200,
-    body: [
-      {
-        id: "1000",
-      },
-    ],
+    body: {
+      users,
+    },
   };
 };
 
-const subject: ApiV1UserGetList["subject"] = "api.v1.user.getList";
+const subject: ApiV1UserGetList['subject'] = 'api.v1.user.getList';
 
 export default {
   subject,

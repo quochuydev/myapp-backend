@@ -1,8 +1,19 @@
-import { ApiV1UserCreate } from '../types/api.v1.user';
+import * as z from 'zod';
 import { Authorize, Handle, Validate } from '../foundation/types';
+import { isValidRequest } from '../foundation/utils';
+import { ApiV1UserCreate } from '../types/api.v1.user';
+
+const schema = z.object({
+  email: z.string(),
+});
 
 const validate: Validate<ApiV1UserCreate> = async (data, injection) => {
-  return { code: 200 };
+  return isValidRequest({
+    data: {
+      ...data.body,
+    },
+    schema,
+  });
 };
 
 const authorize: Authorize<ApiV1UserCreate> = async (data, injection) => {

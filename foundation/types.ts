@@ -17,7 +17,7 @@ export type APIRequest<T extends APIService> = {
   body: T['request'];
 };
 
-type Code = 200 | 400 | 401 | 403 | 500;
+export type Code = 200 | 400 | 401 | 403 | 500;
 
 export type Validate<T extends APIService> = (
   data: {
