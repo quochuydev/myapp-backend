@@ -1,5 +1,13 @@
 # myapp-backend
 
+## 0.0.4
+
+### Patch Changes
+
+- 35a6087: fix: remove s3 service
+- 4ca5c34: chore: update folder name
+- ae3b82d: feat: update integration test
+
 ## 0.0.3
 
 ### Patch Changes
