@@ -33,21 +33,6 @@ jobs:
     runs-on: self-hosted
     environment: ${{ inputs.environment }}
     steps:
-      - name: Remove old container if it exists
-        run: |
-          if [ "$(docker ps -a -q -f name=myapp-backend)" ]; then
-            docker rm --force myapp-backend
-          else
-            echo "No container to remove"
-          fi
-      - name: Remove Docker images if they exist
-        run: |
-          IMAGE_IDS=$(docker images quochuydev/myapp-backend -a -q)
-          if [ -n "$IMAGE_IDS" ]; then
-            docker rmi --force $IMAGE_IDS
-          else
-            echo "No images to remove"
-          fi
       - name: Pull image from docker hub
         run: docker pull quochuydev/myapp-backend:${{ inputs.version }}
       - name: Create .env file
@@ -55,7 +40,26 @@ jobs:
           echo "PORT=3000" > .env
           echo "BUILD_VERSION=${{ inputs.version }}" >> .env
       - name: Run docker container
-        run: docker run --init -d -p 3000:3000 --env-file .env --name myapp-backend quochuydev/myapp-backend
+        run: |
+          NEW_CONTAINER_ID=$(docker run --init -d -p 3000:3000 --env-file .env --name myapp-backend quochuydev/myapp-backend)
+          echo "New container running with ID: $NEW_CONTAINER_ID"
+          echo "NEW_CONTAINER_ID=$NEW_CONTAINER_ID" >> $GITHUB_ENV
+      - name: Remove old container if it exists
+        run: |
+          if [ "$(docker ps -a -q -f name=myapp-backend | grep -v ${{ env.NEW_CONTAINER_ID }})" ]; then
+            docker rm --force $(docker ps -a -q -f name=myapp-backend | grep -v ${{ env.NEW_CONTAINER_ID }})
+          else
+            echo "No container to remove"
+          fi
+      - name: Remove Docker images if they exist
+        run: |
+          NEW_IMAGE_ID=$(docker inspect --format='{{.Image}}' ${{ env.NEW_CONTAINER_ID }})
+          IMAGE_IDS=$(docker images quochuydev/myapp-backend -a -q | grep -v $NEW_IMAGE_ID)
+          if [ -n "$IMAGE_IDS" ]; then
+            docker rmi --force $IMAGE_IDS
+          else
+            echo "No images to remove"
+          fi
       - name: Send custom JSON data to Slack workflow
         id: slack
         uses: slackapi/slack-github-action@v1.26.0
